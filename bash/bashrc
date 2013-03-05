@@ -1,0 +1,15 @@
+# .bashrc
+
+# Return in not interactive
+[[ $- != *i* ]] && return
+
+
+# Source global definitions
+[[ -f /etc/bashrc ]] && . /etc/bashrc
+[[ -f /etc/bash.bashrc ]] && . /etc/bash.bashrc
+
+	 
+# User specific aliases and functions
+
+# Source APPS directory config
+[[ -f ${HOME}/Apps/apps-config ]] && . ${HOME}/Apps/apps-config

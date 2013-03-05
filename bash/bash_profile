@@ -1,0 +1,30 @@
+# .bash_profile
+
+# Add ~/.local/bin and ~/bin to path
+export PATH=$HOME/.local/bin:$HOME/bin:$PATH
+
+
+# Return if not interactive
+[[ $- != *i* ]] && return
+
+
+# Load keychain (inherit if existing SSH_AUTH_SOCK)
+if [ "$SSH_AUTH_SOCK" ]; then
+    inherit="--inherit any"
+fi
+eval `keychain --eval --dir ${HOME}/.cache --agents ssh ${inherit}`
+
+# If SSH connection with TTY use screen
+if [ -n "$SSH_TTY" ];then
+    hostent=$(/usr/bin/getent hosts ${SSH_CONNECTION%% *})
+    if [ -n "${hostent}" ];then
+	host=$(echo ${hostent##* } | cut -d'.' -f1)
+    else
+	host="unknown"
+    fi
+    tmux has -t ${host} && tmux attach -t ${host} || tmux new -s ${host}
+    exit
+fi
+ 
+# Get the aliases and functions
+[[ -f ~/.bashrc ]] &&  . ~/.bashrc
