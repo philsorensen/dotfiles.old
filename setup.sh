@@ -7,13 +7,17 @@ check_executable() {
 }
 
 copy_if_update() {
-  if [ -f $2 ]; then
-    if [ "$(sha1sum $1 | cut -d' ' -f1)" == "$(sha1sum $2 | cut -d' ' -f1)" ]
-    then
-      return
+    if [ -f $2 ]; then
+      if [ "$(sha1sum $1 | cut -d' ' -f1)" == "$(sha1sum $2 | cut -d' ' -f1)" ]
+      then
+	  return
+      else
+	  if [ ! $(head -n1 $2 | grep -q "dotfiles") ]; then
+	      cp $2 $2.bak
+	  fi
+      fi
     fi
-  fi
-  cp $1 $2
+    cp $1 $2
 }
 
 
