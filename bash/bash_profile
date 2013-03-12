@@ -15,8 +15,8 @@ if [ "$SSH_AUTH_SOCK" ]; then
 fi
 eval `keychain --eval --dir ${HOME}/.cache --agents ssh ${inherit}`
 
-# If SSH connection with TTY use screen
-if [ -n "$SSH_TTY" ];then
+# If SSH connection with TTY use tmux (check for loops / no tmux)
+if [ -n "$SSH_TTY" -a "$TERM" != "screen" -a -n "$(command -v tmux)" ];then
     hostent=$(/usr/bin/getent hosts ${SSH_CONNECTION%% *})
     if [ -n "${hostent}" ];then
 	host=$(echo ${hostent##* } | cut -d'.' -f1)
