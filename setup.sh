@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 check_executable() {
     [[ $(command -v $1) ]] && return
@@ -12,11 +12,13 @@ copy_if_update() {
       then
 	  return
       else
-	  if [ ! $(head -n1 $2 | grep -q "dotfiles") ]; then
+	  if [ -z "$(head -n1 $2 | grep dotfiles)" ]; then
+	      echo "Backing up $2"
 	      cp $2 $2.bak
 	  fi
       fi
     fi
+    echo "Updating $2"
     cp $1 $2
 }
 
@@ -28,6 +30,3 @@ check_executable tmux
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
 copy_if_update bash/tmux.conf ${HOME}/.tmux.conf
-
-
-
