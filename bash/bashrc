@@ -12,5 +12,8 @@
 	 
 # User specific aliases and functions
 
+# Source bashrc.local if availible
+[[ -f ${HOME}/.bashrc.local ]] && . ${HOME}/.bashrc.local
+
 # Source APPS directory config
 [[ -f ${HOME}/Apps/apps-config ]] && . ${HOME}/Apps/apps-config
