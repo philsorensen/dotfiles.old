@@ -2,7 +2,7 @@
 
 check_executable() {
     [[ $(command -v $1) ]] && return
-    echo "command $1 needs to in PATH"
+    echo "command $1 needs to be in PATH"
     exit
 }
 
@@ -22,11 +22,40 @@ copy_if_update() {
     cp $1 $2
 }
 
+#
+# Check needed executables 
+#
 
-# Install bash startup scripts and tmux.conf
+# needed to install
+check_executable curl
+check_executable g++
+
+# needed for scripts 
 check_executable keychain
 check_executable tmux
 
+
+#
+# Install files
+#
+
+# bash
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
-copy_if_update bash/tmux.conf ${HOME}/.tmux.conf
+
+# tmux
+if [ ! -d ${HOME}/.tmux ]; then
+    mkdir ${HOME}/.tmux
+fi
+copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
+
+
+pushd /tmp
+curl -O \
+  https://raw.github.com/thewtex/tmux-mem-cpu-load/master/tmux-mem-cpu-load.cpp
+popd
+if [ -f /tmp/tmux-mem-cpu-load.cpp ]; then
+    g++ -o ${HOME}/.tmux/tmux-mem-cpu-load /tmp/tmux-mem-cpu-load.cpp
+else
+    echo "Failed to get tmux-mem-cpu-load.cpp"
+fi
