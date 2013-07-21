@@ -27,8 +27,9 @@ copy_if_update() {
 #
 
 # needed to install
-check_executable curl
+check_executable cmake
 check_executable g++
+check_executable git
 
 # needed for scripts 
 check_executable keychain
@@ -49,13 +50,16 @@ if [ ! -d ${HOME}/.tmux ]; then
 fi
 copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
 
-
+# download/install tmux-mem-cpu-load in ~/.tmux
 pushd /tmp
-curl -O \
-  https://raw.github.com/thewtex/tmux-mem-cpu-load/master/tmux-mem-cpu-load.cpp
-popd
-if [ -f /tmp/tmux-mem-cpu-load.cpp ]; then
-    g++ -o ${HOME}/.tmux/tmux-mem-cpu-load /tmp/tmux-mem-cpu-load.cpp
+git clone git://github.com/thewtex/tmux-mem-cpu-load
+if [ -d /tmp/tmux-mem-cpu-load ]; then
+    cd tmux-mem-cpu-load
+    cmake .
+    make
+    cp tmux-mem-cpu-load ${HOME}/.tmux/  
 else
-    echo "Failed to get tmux-mem-cpu-load.cpp"
+    echo "Failed to get tmux-mem-cpu-load"
+    exit
 fi
+popd
