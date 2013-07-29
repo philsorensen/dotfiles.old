@@ -40,9 +40,17 @@ check_executable tmux
 # Install files
 #
 
+
+# create ~/Apps/
+[ ! -d ${HOME}/Apps ] && mkdir ${HOME}/Apps
+[ ! -d ${HOME}/Apps/bin ] && mkdir ${HOME}/Apps/bin
+[ ! -f ${HOME}/Apps/apps-config ] && touch ${HOME}/Apps/apps-config
+
+
 # bash
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
+
 
 # tmux
 if [ ! -d ${HOME}/.tmux ]; then

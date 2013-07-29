@@ -1,8 +1,8 @@
 # maintained by dotfiles - changes will be overwritten
 # .bash_profile
 
-# Add ~/.local/bin and ~/bin to path
-export PATH=$HOME/.local/bin:$HOME/bin:$PATH
+# Add ~/Apps/bin and ~/bin to path
+export PATH=$HOME/Apps/bin:$HOME/bin:$PATH
 
 
 # Return if not interactive
