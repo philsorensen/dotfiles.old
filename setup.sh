@@ -50,6 +50,7 @@ check_executable tmux
 # bash
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
+copy_if_update bash/i18n ${HOME}/.i18n
 
 
 # tmux
