@@ -22,6 +22,11 @@ copy_if_update() {
     cp $1 $2
 }
 
+expand_file() {
+    eval "echo \"$(cat $1)\""
+}
+
+
 #
 # Check needed executables 
 #
@@ -34,6 +39,14 @@ check_executable git
 # needed for scripts 
 check_executable keychain
 check_executable tmux
+
+
+# source and check for config 
+if [ ! -r config ]; then
+    echo "Please copy config.in to config and edit settings"
+    exit
+fi
+source config
 
 
 #
@@ -72,3 +85,9 @@ else
     exit
 fi
 popd
+
+
+# git
+expand_file git/gitconfig >/tmp/gitconfig
+copy_if_update /tmp/gitconfig ~/.gitconfig
+

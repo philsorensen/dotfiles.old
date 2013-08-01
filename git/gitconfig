@@ -1,0 +1,7 @@
+[user]
+	name = Phillip Sorensen
+	email = ${EMAIL}
+[core]
+	autocrlf = input
+[color]
+	ui = true
