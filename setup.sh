@@ -94,5 +94,5 @@ copy_if_update /tmp/gitconfig ${HOME}/.gitconfig
 
 # SSH
 [ ! -d ${HOME}/.ssh ] && (mkdir ${HOME}/.ssh; chmod 700)
-copy_if_update ssh/config ${HOME}/.config
-chmod 600 ${HOME}/.config
+copy_if_update ssh/config ${HOME}/.ssh/config
+chmod 600 ${HOME}/.ssh/config
