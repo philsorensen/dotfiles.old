@@ -16,15 +16,18 @@ fi
 eval `keychain --eval --dir ${HOME}/.cache --agents ssh ${inherit}`
 
 # If SSH connection with TTY use tmux (check for loops / no tmux)
-if [ -n "$SSH_TTY" -a "$TERM" != "screen" -a -n "$(command -v tmux)" ];then
+if [ -n "$SSH_TTY" -a "${TERM:0:6}" != "screen" -a -n "$(command -v tmux)" ]
+then
     hostent=$(/usr/bin/getent hosts ${SSH_CONNECTION%% *})
     if [ -n "${hostent}" ];then
 	host=$(echo ${hostent##* } | cut -d'.' -f1)
     else
 	host="unknown"
     fi
-    tmux has -t ${host} && tmux attach -t ${host} || tmux new -s ${host}
-    exit
+    if tmux -V >/dev/null 2>/dev/null; then
+	tmux has -t ${host} && tmux attach -t ${host} || tmux new -s ${host}
+	exit
+    fi
 fi
  
 # Get the aliases and functions
