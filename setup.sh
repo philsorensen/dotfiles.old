@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 check_executable() {
     [[ $(command -v $1) ]] && return
@@ -28,18 +29,12 @@ expand_file() {
 
 
 #
-# Check needed executables 
+# Check needed executables and configuration
 #
-
-# needed to install
-check_executable cmake
-check_executable g++
-check_executable git
 
 # needed for scripts 
 check_executable keychain
 check_executable tmux
-
 
 # source and check for config 
 if [ ! -r config ]; then
@@ -53,18 +48,15 @@ source config
 # Install files
 #
 
-
 # create ~/Apps/
 [ ! -d ${HOME}/Apps ] && mkdir ${HOME}/Apps
 [ ! -d ${HOME}/Apps/bin ] && mkdir ${HOME}/Apps/bin
 [ ! -f ${HOME}/Apps/apps-config ] && touch ${HOME}/Apps/apps-config
 
-
 # bash
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
 copy_if_update bash/i18n ${HOME}/.i18n
-
 
 # tmux
 if [ ! -d ${HOME}/.tmux ]; then
@@ -72,27 +64,39 @@ if [ ! -d ${HOME}/.tmux ]; then
 fi
 copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
 
-# download/install tmux-mem-cpu-load in ~/.tmux
-pushd /tmp
-git clone git://github.com/thewtex/tmux-mem-cpu-load
-if [ -d /tmp/tmux-mem-cpu-load ]; then
-    cd tmux-mem-cpu-load
-    cmake .
-    make
-    cp tmux-mem-cpu-load ${HOME}/.tmux/  
-else
-    echo "Failed to get tmux-mem-cpu-load"
-    exit
-fi
-popd
-
-
 # git
 expand_file git/gitconfig >/tmp/gitconfig
 copy_if_update /tmp/gitconfig ${HOME}/.gitconfig
-
+rm /tmp/gitconfig
 
 # SSH
 [ ! -d ${HOME}/.ssh ] && (mkdir ${HOME}/.ssh; chmod 700)
 copy_if_update ssh/config ${HOME}/.ssh/config
 chmod 600 ${HOME}/.ssh/config
+
+
+#
+# Install some binaries
+#
+
+# download/install tmux-mem-cpu-load in ~/.tmux
+if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
+    check_executable cmake
+    check_executable g++
+    check_executable git
+	
+    pushd /tmp
+    git clone git://github.com/thewtex/tmux-mem-cpu-load
+    if [ -d /tmp/tmux-mem-cpu-load ]; then
+	cd tmux-mem-cpu-load
+	cmake .
+	make
+	cp tmux-mem-cpu-load ${HOME}/.tmux/  
+	cd ..
+	rm -rf tmux-mem-cpu-load
+    else
+	echo "Failed to get tmux-mem-cpu-load"
+	exit
+    fi
+    popd
+fi
