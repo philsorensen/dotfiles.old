@@ -21,6 +21,9 @@ esac
 # check for vcprompt
 if ${HOME}/.bash/vcprompt >/dev/null 2>/dev/null; then VCPROMPT='yes'; fi
 
+# turn off normal virtenv prompt 
+export VIRTUAL_ENV_DISABLE_PROMPT="yes"
+
 
 
 function __prompt_command {
@@ -30,7 +33,11 @@ function __prompt_command {
 
     echo -ne "\033[34m[${PWD/#$HOME/~}\033[0m"
 
-    if [ -n "$VCPROMPT" ]; then
+    if [ -n "${VIRTUAL_ENV}" ]; then
+	echo -ne " \033[31m$(basename ${VIRTUAL_ENV})\033[0m"
+    fi
+
+    if [ -n "${VCPROMPT}" ]; then
 	vc=$(${HOME}/.bash/vcprompt -f "%n:%b:%r:%m%u")
 	if [ -n "$vc" ]; then
 	    OIFS=$IFS; IFS=":"; set $vc; IFS=$OIFS
