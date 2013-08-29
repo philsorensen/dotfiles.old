@@ -8,6 +8,8 @@
 [[ -f /etc/bashrc ]] && . /etc/bashrc
 [[ -f /etc/bash.bashrc ]] && . /etc/bash.bashrc
 
+# Source prompt info
+source ${HOME}/.bash/prompt
 
 # Change tmux status bar if tmux is running locally
 if [ -n "${TMUX}" -a -z "${SSH_CONNECTION}" ]; then
