@@ -59,7 +59,7 @@ source config
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
 copy_if_update bash/i18n ${HOME}/.i18n
-copy_if_update bash/prompt ${HOme}/.bash/prompt
+copy_if_update bash/prompt ${HOME}/.bash/prompt
 
 # tmux
 [ ! -d ${HOME}/.tmux ] &&  mkdir ${HOME}/.tmux
