@@ -54,14 +54,16 @@ source config
 [ ! -f ${HOME}/Apps/apps-config ] && touch ${HOME}/Apps/apps-config
 
 # bash
+[ ! -d ${HOME}/.bash ] && mkdir ${HOME}/.bash
+
 copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
 copy_if_update bash/i18n ${HOME}/.i18n
+copy_if_update bash/prompt ${HOme}/.bash/prompt
 
 # tmux
-if [ ! -d ${HOME}/.tmux ]; then
-    mkdir ${HOME}/.tmux
-fi
+[ ! -d ${HOME}/.tmux ] &&  mkdir ${HOME}/.tmux
+
 copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
 
 # git
@@ -84,7 +86,7 @@ if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
     check_executable cmake
     check_executable g++
     check_executable git
-	
+
     pushd /tmp
     git clone git://github.com/thewtex/tmux-mem-cpu-load
     if [ -d /tmp/tmux-mem-cpu-load ]; then
@@ -96,6 +98,26 @@ if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
 	rm -rf tmux-mem-cpu-load
     else
 	echo "Failed to get tmux-mem-cpu-load"
+	exit
+    fi
+    popd
+fi
+
+# download/install vcprompt in ~/.bash
+if [ ! -x ${HOME}/.bash/vcprompt ]; then
+    check_executable gcc
+
+    pushd /tmp
+    wget https://bitbucket.org/gward/vcprompt/downloads/vcprompt-1.1.tar.gz
+    if [ -f /tmp/vcprompt-1.1.tar.gz ]; then
+	tar -xzf vcprompt-1.1.tar.gz
+	cd vcprompt-1.1
+	make
+	cp vcprompt ${HOME}/.bash/
+	cd ..
+	rm -rf vcprompt-1.1*
+    else
+	echo "Failed to get vcprompt"
 	exit
     fi
     popd

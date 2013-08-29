@@ -1,0 +1,49 @@
+# maintained by dotfiles - changes will be overwritten
+#
+# BASH prompt setup
+#
+
+VCPROMPT=''
+XTITLE=''
+
+# set thing based on TERM
+case $TERM in
+    xterm*)
+	XTITLE='yes'
+	;;
+    screen*)
+	XTITLE='yes'
+	;;
+    *)
+      ;;
+esac
+
+# check for vcprompt
+if ${HOME}/.bash/vcprompt >/dev/null 2>/dev/null; then VCPROMPT='yes'; fi
+
+
+
+function __prompt_command {
+    [ -n "$XTITLE" ] && \
+	echo -en "\n\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\007"
+
+
+    echo -ne "\033[34m[${PWD/#$HOME/~}\033[0m"
+
+    if [ -n "$VCPROMPT" ]; then
+	vc=$(${HOME}/.bash/vcprompt -f "%n:%b:%r:%m%u")
+	if [ -n "$vc" ]; then
+	    OIFS=$IFS; IFS=":"; set $vc; IFS=$OIFS
+
+	    if [ "$1" == "git" ]; then
+		echo -ne " \033[32m$2-${3:0:7}$4\033[0m" 
+	    fi
+	fi
+    fi
+
+    echo -e "\033[34m]\033[0m"
+}
+
+
+export PROMPT_COMMAND=__prompt_command
+export PS1="\[\e[32;1m\]\u@\h\[\e[0m\] \$ "
