@@ -36,12 +36,12 @@ expand_file() {
 check_executable keychain
 check_executable tmux
 
-# source and check for config 
-if [ ! -r config ]; then
-    echo "Please copy config.in to config and edit settings"
-    exit
+# config variables
+if [ "${USER}" == "pas37" ]; then
+    EMAIL="pas37@cornell.edu"
+else
+    EMAIL="phil.a.sorensen@gmail.com"
 fi
-source config
 
 
 #
