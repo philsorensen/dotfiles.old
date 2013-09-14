@@ -122,3 +122,19 @@ if [ ! -x ${HOME}/.bash/vcprompt ]; then
     fi
     popd
 fi
+
+# python virtualenv and virtualenv-sh
+export PATH=${HOME}/.python/bin:$PATH
+export PYTHONUSERBASE=${HOME}/.python
+
+[ ! -d ${HOME}/.python ] && mkdir ${HOME}/.python
+# if SL6 add distutils/setuptools
+
+easy_install -U --user virtualenv
+if ! easy_install -U --user virtualenv-sh; then
+    easy_install -eb /tmp virtualenv-sh
+    pushd /tmp/virtualenv-sh
+    make
+    popd
+    easy_install --user /tmp/virtualenv-sh
+fi

@@ -11,6 +11,11 @@
 # Source prompt info
 source ${HOME}/.bash/prompt
 
+# local python config
+export PYTHONUSERBASE=${HOME}/.python
+export PATH=${HOME}/.python/bin:$PATH
+source ${HOME}/.python/bin/virtualenv-sh.bash
+
 # Change tmux status bar if tmux is running locally
 if [ -n "${TMUX}" -a -z "${SSH_CONNECTION}" ]; then
     tmux set-option status-bg '#80ff80' >/dev/null
