@@ -25,16 +25,20 @@ if ${HOME}/.bash/vcprompt >/dev/null 2>/dev/null; then VCPROMPT='yes'; fi
 export VIRTUAL_ENV_DISABLE_PROMPT="yes"
 
 
-
 function __prompt_command {
+    local path
+    local venv
+    local vcin
+    local vc
+
+    path="${PWD/#$HOME/~}"
+
     [ -n "$XTITLE" ] && \
-	echo -en "\n\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\007"
+	echo -en "\n\033]0;${USER}@${HOSTNAME%%.*}:${path}\007"
 
-
-    echo -ne "\033[34m[${PWD/#$HOME/~}\033[0m"
 
     if [ -n "${VIRTUAL_ENV}" ]; then
-	echo -ne " \033[31m$(basename ${VIRTUAL_ENV})\033[0m"
+	venv=$(echo -ne " \033[31m$(basename ${VIRTUAL_ENV})\033[0m")
     fi
 
     if [ -n "${VCPROMPT}" ]; then
@@ -43,14 +47,16 @@ function __prompt_command {
 	    OIFS=$IFS; IFS=":"; set $vc; IFS=$OIFS
 
 	    if [ "$1" == "git" ]; then
-		echo -ne " \033[32m$2-${3:0:7}$4\033[0m" 
+		vcin=$(echo -ne " \033[32m$2-${3:0:7}$4\033[0m")
+	    else
+		vcin=" $1:$2-$3$4"
 	    fi
 	fi
     fi
 
-    echo -e "\033[34m]\033[0m"
+    ps1_info=$(echo -en "\033[34m[${path}\033[0m${venv}${vcin}\033[34m]\033[0m")
 }
 
 
 export PROMPT_COMMAND=__prompt_command
-export PS1="\[\e[32;1m\]\u@\h\[\e[0m\] \\$ "
+export PS1="\${ps1_info}\n\[\e[32;1m\]\u@\h\[\e[0m\] \\$ "
