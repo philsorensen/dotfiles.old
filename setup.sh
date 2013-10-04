@@ -13,7 +13,7 @@ copy_if_update() {
       then
 	  return
       else
-	  if [ -z "$(head -n1 $2 | grep dotfiles)" ]; then
+	  if [ -z "$(head -n2 $2 | grep dotfiles)" ]; then
 	      echo "Backing up $2"
 	      cp $2 $2.bak
 	  fi
@@ -31,10 +31,6 @@ expand_file() {
 #
 # Check needed executables and configuration
 #
-
-# needed for scripts 
-check_executable keychain
-check_executable tmux
 
 # config variables
 if [ "${USER}" == "pas37" ]; then
@@ -54,6 +50,9 @@ fi
 [ ! -f ${HOME}/Apps/apps-config ] && touch ${HOME}/Apps/apps-config
 
 # bash
+check_executable keychain
+check_executable tmux
+
 [ ! -d ${HOME}/.bash ] && mkdir ${HOME}/.bash
 
 copy_if_update bash/bashrc ${HOME}/.bashrc
@@ -86,6 +85,7 @@ if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
     check_executable cmake
     check_executable g++
     check_executable git
+    check_executable make
 
     pushd /tmp
     git clone git://github.com/thewtex/tmux-mem-cpu-load
@@ -105,7 +105,9 @@ fi
 
 # download/install vcprompt in ~/.bash
 if [ ! -x ${HOME}/.bash/vcprompt ]; then
+    check_executable wget
     check_executable gcc
+    check_executable make
 
     pushd /tmp
     wget https://bitbucket.org/gward/vcprompt/downloads/vcprompt-1.1.tar.gz
@@ -124,17 +126,34 @@ if [ ! -x ${HOME}/.bash/vcprompt ]; then
 fi
 
 # python virtualenv and virtualenv-sh
+check_executable python
+check_executable easy_install
+
 export PATH=${HOME}/.python/bin:$PATH
 export PYTHONUSERBASE=${HOME}/.python
 
 [ ! -d ${HOME}/.python ] && mkdir ${HOME}/.python
-# if SL6 add distutils/setuptools
+
+if ! easy_install --user 2>&1 | grep user; then
+    easy_install -U -eb /tmp setuptools
+    [ -d /tmp/setuptools ] && pushd /tmp/setuptools
+    [ -d /tmp/distribute ] && pushd /tmp/distribute
+    python setup.py install --user
+    popd
+fi
+easy_install -U --user setuptools
 
 easy_install -U --user virtualenv
+
 if ! easy_install -U --user virtualenv-sh; then
-    easy_install -eb /tmp virtualenv-sh
+    check_executable make
+
+    easy_install -U -eb /tmp virtualenv-sh
     pushd /tmp/virtualenv-sh
     make
     popd
     easy_install --user /tmp/virtualenv-sh
+fi
+source ${HOME}/.python/bin/virtualenv-sh.bash
+if [ -d ${HOME}/.virtualenvs ]; then
 fi
