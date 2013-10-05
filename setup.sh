@@ -134,14 +134,13 @@ export PYTHONUSERBASE=${HOME}/.python
 
 [ ! -d ${HOME}/.python ] && mkdir ${HOME}/.python
 
-if ! easy_install --user 2>&1 | grep user; then
+if easy_install --user 2>&1 | grep user; then
     easy_install -U -eb /tmp setuptools
-    [ -d /tmp/setuptools ] && pushd /tmp/setuptools
     [ -d /tmp/distribute ] && pushd /tmp/distribute
     python setup.py install --user
     popd
+    rm -rf /tmp/distribute
 fi
-easy_install -U --user setuptools
 
 easy_install -U --user virtualenv
 
@@ -150,10 +149,14 @@ if ! easy_install -U --user virtualenv-sh; then
 
     easy_install -U -eb /tmp virtualenv-sh
     pushd /tmp/virtualenv-sh
+
+    cd functions/bash
+    sed -ie 's/virtualenv-sh-virtualenvs/virtualenv_sh_virtualenvs/' \
+	_virtualenv_sh_complete_virtualenvs
+    cd ../..
+
     make
     popd
     easy_install --user /tmp/virtualenv-sh
-fi
-source ${HOME}/.python/bin/virtualenv-sh.bash
-if [ -d ${HOME}/.virtualenvs ]; then
+    rm -rf /tmp/virtualenv-sh
 fi
