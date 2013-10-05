@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 
 check_executable() {
     [[ $(command -v $1) ]] && return
@@ -160,3 +160,12 @@ if ! easy_install -U --user virtualenv-sh; then
     easy_install --user /tmp/virtualenv-sh
     rm -rf /tmp/virtualenv-sh
 fi
+
+# install iPython 
+easy_install -U --user ipython[all]
+
+ipython profile create
+ipy_config_path=$(ipython locate)/profile_default/startup
+
+copy_if_update ipy-config/00-virtualenv.py ${ipy_config_path}/00-virtualenv.py
+
