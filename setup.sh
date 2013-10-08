@@ -127,20 +127,21 @@ fi
 
 # python virtualenv and virtualenv-sh
 check_executable python
-check_executable easy_install
 
 export PATH=${HOME}/.python/bin:$PATH
 export PYTHONUSERBASE=${HOME}/.python
 
 [ ! -d ${HOME}/.python ] && mkdir ${HOME}/.python
 
-if easy_install --user 2>&1 | grep user; then
-    easy_install -U -eb /tmp setuptools
-    [ -d /tmp/distribute ] && pushd /tmp/distribute
-    python setup.py install --user
+if [ ! -f "${HOME}/.python/bin/easy_install" ]; then 
+    pushd /tmp
+    wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+    python ez_setup.py --user
+    rm ez_setup.py
     popd
-    rm -rf /tmp/distribute
+    hash -r
 fi
+easy_install -U --user setuptools
 
 easy_install -U --user virtualenv
 
@@ -168,4 +169,3 @@ ipython profile create
 ipy_config_path=$(ipython locate)/profile_default/startup
 
 copy_if_update ipy-config/00-virtualenv.py ${ipy_config_path}/00-virtualenv.py
-
