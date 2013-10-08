@@ -126,7 +126,17 @@ if [ ! -x ${HOME}/.bash/vcprompt ]; then
 fi
 
 # python virtualenv and virtualenv-sh
+if [ -n "${VIRTUAL_ENV}" ]; then
+    echo "In virtual environment: Can't proceed"
+    exit 1
+fi
+py_ver=$(basename $(realpath $(which python)))
+
 check_executable python
+if [ -z "$(find /usr/include -name Python.h)" ]; then
+    echo "Need python-devel: Can't proceed"
+    exit
+fi
 
 export PATH=${HOME}/.python/bin:$PATH
 export PYTHONUSERBASE=${HOME}/.python
@@ -164,6 +174,11 @@ fi
 
 # install iPython 
 easy_install -U --user ipython[all]
+
+if ! command -v ipython >/dev/null; then
+    [ -f ${HOME}/.python/bin/ipython3 ] && \
+	(cd ${HOME}/.python/bin/; ln -s ipython3 ipython)
+fi
 
 ipython profile create
 ipy_config_path=$(ipython locate)/profile_default/startup
