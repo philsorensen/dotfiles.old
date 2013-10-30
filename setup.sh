@@ -125,35 +125,64 @@ if [ ! -x ${HOME}/.bash/vcprompt ]; then
     popd
 fi
 
-# python virtualenv and virtualenv-sh
+
+#
+# Python setup
+#
+
+# check for virtual environment
 if [ -n "${VIRTUAL_ENV}" ]; then
     echo "In virtual environment: Can't proceed"
     exit 1
 fi
-py_ver=$(basename $(realpath $(which python)))
 
+# check default python
 check_executable python
-if [ -z "$(find /usr/include -name Python.h)" ]; then
-    echo "Need python-devel: Can't proceed"
+
+default_python=$(basename $(realpath $(which python)) | sed -e 's/python//')
+default_major=${default_python//.*/}
+
+if [ -z "$(ls /usr/include/python${default_python}*/Python.h 2>/dev/null)" ]
+then
+    echo "Need Python.h: can't proceed"
     exit
 fi
 
+# check for the other python version
+other="23"
+other=${other//${default_major}/}
+
+if [ -n "$(command -v python${other})" -a \
+     -n "$(ls /usr/include/python${other}*/Python.h 2>/dev/null)" ]; then
+    major="${other}"
+    ver=$(basename $(realpath $(which python${other})) | sed -e 's/python//')
+
+    versions="${major}:${ver}"
+fi
+versions="${versions} ${default_major}:${default_python}"
+
+
+# install select python packages
 export PATH=${HOME}/.python/bin:$PATH
 export PYTHONUSERBASE=${HOME}/.python
 
 [ ! -d ${HOME}/.python ] && mkdir ${HOME}/.python
 
-if [ ! -f "${HOME}/.python/bin/easy_install" ]; then 
-    pushd /tmp
-    wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
-    python ez_setup.py --user
-    rm ez_setup.py
-    popd
-    hash -r
-fi
-easy_install -U --user setuptools
+for vers in ${versions}; do
+    ver=( ${vers/:/ } )
 
-easy_install -U --user virtualenv
+    if [ ! -f "${PYTHONUSERBASE}/bin/easy_install-${ver[1]}" ]; then
+	pushd /tmp
+	wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+	python${ver[0]} ez_setup.py --user
+	rm ez_setup.py
+	popd
+	hash -r
+    fi
+    easy_install-${ver[1]} -U --user setuptools
+    easy_install-${ver[1]} -U --user virtualenv
+    easy_install-${ver[1]} -U --user ipython[all]
+done
 
 if ! easy_install -U --user virtualenv-sh; then
     check_executable make
@@ -172,15 +201,17 @@ if ! easy_install -U --user virtualenv-sh; then
     rm -rf /tmp/virtualenv-sh
 fi
 
-# install iPython 
-easy_install -U --user ipython[all]
-
-if ! command -v ipython >/dev/null; then
-    [ -f ${HOME}/.python/bin/ipython3 ] && \
-	(cd ${HOME}/.python/bin/; ln -s ipython3 ipython)
+# install iPython config
+if command -v ipython >/dev/null; then
+    IPYTHON=ipython
+elif command -v >/dev/null; then
+    IPYTHON=ipython3
+else
+    echo "Can't find ipython or ipython3"
+    exit
 fi
 
-ipython profile create
 ipy_config_path=$(ipython locate)/profile_default/startup
 
+[ ! -d ${ipy_config_path} ] && ${IPYTHON} profile create
 copy_if_update ipy-config/00-virtualenv.py ${ipy_config_path}/00-virtualenv.py
