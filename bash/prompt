@@ -32,6 +32,9 @@ function __prompt_command {
     local vc
 
     path="${PWD/#$HOME/~}"
+    until [ ${#path} -lt 50 ]; do
+	path="../${path#*/*/}"
+    done
 
     [ -n "$XTITLE" ] && \
 	echo -en "\n\033]0;${USER}@${HOSTNAME%%.*}:${path}\007"
