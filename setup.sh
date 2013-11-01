@@ -175,30 +175,34 @@ for vers in ${versions}; do
 	pushd /tmp
 	wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
 	python${ver[0]} ez_setup.py --user
-	rm ez_setup.py
+	rm ez_setup.py setuptools-*
+
+	wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+	python${ver[0]} get-pip.py --user
+	rm get-pip.py
 	popd
 	hash -r
     fi
-    easy_install-${ver[1]} -U --user setuptools
-    easy_install-${ver[1]} -U --user virtualenv
-    easy_install-${ver[1]} -U --user ipython[all]
+    pip-${ver[1]} install -U --user setuptools
+    pip-${ver[1]} install -U --user virtualenv
+    pip-${ver[1]} install -U --user ipython[all]
 done
 
-if ! easy_install -U --user virtualenv-sh; then
+if ! pip install -U --user virtualenv-sh; then
     check_executable make
 
-    easy_install -U -eb /tmp virtualenv-sh
-    pushd /tmp/virtualenv-sh
+    pip install --no-install virtualenv-sh
+
+    pushd /tmp/pip_build_phil/virtualenv-sh
 
     cd functions/bash
     sed -ie 's/virtualenv-sh-virtualenvs/virtualenv_sh_virtualenvs/' \
 	_virtualenv_sh_complete_virtualenvs
     cd ../..
-
     make
+
+    pip install --user .
     popd
-    easy_install --user /tmp/virtualenv-sh
-    rm -rf /tmp/virtualenv-sh
 fi
 
 # install iPython config
