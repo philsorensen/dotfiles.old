@@ -62,7 +62,6 @@ copy_if_update bash/prompt ${HOME}/.bash/prompt
 
 # tmux
 [ ! -d ${HOME}/.tmux ] &&  mkdir ${HOME}/.tmux
-
 copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
 
 # git
@@ -127,95 +126,11 @@ fi
 
 
 #
-# Python setup
+# Install setups into Apps 
 #
 
-# check for virtual environment
-if [ -n "${VIRTUAL_ENV}" ]; then
-    echo "In virtual environment: Can't proceed"
-    exit 1
-fi
-
-# check default python
-check_executable python
-
-default_python=$(basename $(realpath $(which python)) | sed -e 's/python//')
-default_major=${default_python//.*/}
-
-if [ -z "$(ls /usr/include/python${default_python}*/Python.h 2>/dev/null)" ]
-then
-    echo "Need Python.h: can't proceed"
-    exit
-fi
-
-# check for the other python version
-other="23"
-other=${other//${default_major}/}
-
-if [ -n "$(command -v python${other})" -a \
-     -n "$(ls /usr/include/python${other}*/Python.h 2>/dev/null)" ]; then
-    major="${other}"
-    ver=$(basename $(realpath $(which python${other})) | sed -e 's/python//')
-
-    versions="${major}:${ver}"
-fi
-versions="${versions} ${default_major}:${default_python}"
-
-
-# install select python packages
-export PATH=${HOME}/.python/bin:$PATH
-export PYTHONUSERBASE=${HOME}/.python
-
-[ ! -d ${HOME}/.python ] && mkdir ${HOME}/.python
-
-for vers in ${versions}; do
-    ver=( ${vers/:/ } )
-
-    if [ ! -f "${PYTHONUSERBASE}/bin/easy_install-${ver[1]}" ]; then
-	pushd /tmp
-	wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
-	python${ver[0]} ez_setup.py --user
-	rm ez_setup.py setuptools-*
-
-	wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-	python${ver[0]} get-pip.py --user
-	rm get-pip.py
-	popd
-	hash -r
-    fi
-    pip-${ver[1]} install -U --user setuptools
-    pip-${ver[1]} install -U --user virtualenv
-    pip-${ver[1]} install -U --user ipython[all]
+setups=$(grep "^# SETUP:" ${HOME}/Apps/apps-config | sed -e 's/^# SETUP://')
+for setup in $setups; do
+    ./apps-setups/${setup}.sh
 done
 
-if ! pip install -U --user virtualenv-sh; then
-    check_executable make
-
-    pip install --no-install virtualenv-sh
-
-    pushd /tmp/pip_build_phil/virtualenv-sh
-
-    cd functions/bash
-    sed -ie 's/virtualenv-sh-virtualenvs/virtualenv_sh_virtualenvs/' \
-	_virtualenv_sh_complete_virtualenvs
-    cd ../..
-    make
-
-    pip install --user .
-    popd
-fi
-
-# install iPython config
-if command -v ipython >/dev/null; then
-    IPYTHON=ipython
-elif command -v >/dev/null; then
-    IPYTHON=ipython3
-else
-    echo "Can't find ipython or ipython3"
-    exit
-fi
-
-ipy_config_path=$(ipython locate)/profile_default/startup
-
-[ ! -d ${ipy_config_path} ] && ${IPYTHON} profile create
-copy_if_update ipy-config/00-virtualenv.py ${ipy_config_path}/00-virtualenv.py
