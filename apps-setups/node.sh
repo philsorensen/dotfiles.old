@@ -45,6 +45,13 @@ if [ "${ID}" != "arch" ]; then
     else
         npm -g update
     fi
+else
+    if [ -z "$(command -v node)" ]; then
+	echo "Please install node.js with pacman"
+	exit
+    fi
+    echo "prefix = /home/phil/Apps/node" > ${HOME}/.npmrc
+    npm -g update
 fi
 
 grep -v "# node: " ${HOME}/Apps/apps-config > /tmp/apps-config
@@ -56,4 +63,3 @@ if [ "$(sha1sum ${HOME}/Apps/apps-config | awk '{print $1}')" != \
     cp /tmp/apps-config ${HOME}/Apps/apps-config
 fi
 rm /tmp/apps-config
-
