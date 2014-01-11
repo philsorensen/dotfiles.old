@@ -54,12 +54,6 @@ else
     npm -g update
 fi
 
-grep -v "# node: " ${HOME}/Apps/apps-config > /tmp/apps-config
-echo "# node: set PATH"                                         >>/tmp/apps-config
-echo "export PATH=${HOME}/Apps/node/bin:\$PATH         # node: ">>/tmp/apps-config
-
-if [ "$(sha1sum ${HOME}/Apps/apps-config | awk '{print $1}')" != \
-     "$(sha1sum /tmp/apps-config | awk '{print $1}')" ]; then
-    cp /tmp/apps-config ${HOME}/Apps/apps-config
-fi
-rm /tmp/apps-config
+echo ""                                         >>/tmp/apps-config
+echo "# add node/bin directory to PATH"         >>/tmp/apps-config
+echo "export PATH=${HOME}/Apps/node/bin:\$PATH" >>/tmp/apps-config

@@ -129,8 +129,15 @@ fi
 # Install setups into Apps 
 #
 
+# clean all from apps-config after '# SETUP:'
+awk '{print} /# SETUP:/{exit}' ${HOME}/Apps/apps-config >> /tmp/apps-config
+
+# install setups
 setups=$(grep "^# SETUP:" ${HOME}/Apps/apps-config | sed -e 's/^# SETUP://')
 for setup in $setups; do
     ./apps-setups/${setup}.sh
 done
 
+# copy on change
+copy_if_update /tmp/apps-config ${HOME}/Apps/apps-config
+rm /tmp/apps-config
