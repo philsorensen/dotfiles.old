@@ -22,7 +22,7 @@ alter_path add ${HOME}/.local/bin
 
 
 # Source prompt info
-source ${HOME}/.bash/prompt
+source ${HOME}/.config/bash/prompt
 
 # Change tmux status bar if tmux is running locally
 if [ -n "${TMUX}" -a -z "${SSH_CONNECTION}" ]; then
