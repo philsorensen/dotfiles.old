@@ -1,12 +1,25 @@
 # maintained by dotfiles - changes will be overwritten
 # .bashrc
 
+source ${HOME}/.config/bash/functions
+
+# remove ~/bin from path and  make sure ~/.local/bin is at the front 
+alter_path remove ${HOME}/bin
+
+alter_path remove ${HOME}/.local/bin
+alter_path add ${HOME}/.local/bin
+
+
 # Return in not interactive
 [[ $- != *i* ]] && return
 
 # Source global definitions
 [[ -f /etc/bashrc ]] && . /etc/bashrc
 [[ -f /etc/bash.bashrc ]] && . /etc/bash.bashrc
+
+# return if unsupported
+[ "${DISTRO}" = "unsupported" ] && return
+
 
 # Source prompt info
 source ${HOME}/.bash/prompt
@@ -22,6 +35,3 @@ fi
 
 # Source bashrc.local if availible
 [[ -f ${HOME}/.bashrc.local ]] && . ${HOME}/.bashrc.local
-
-# Source APPS directory config
-[[ -f ${HOME}/Apps/apps-config ]] && . ${HOME}/Apps/apps-config

@@ -1,0 +1,41 @@
+#
+# functions bash scripts
+#
+
+
+# set $DISTRO
+DISTRO="unsupported"
+if [ -f "/etc/os-release" ]; then
+    source /etc/os-release
+
+    if [ "${ID}" = "arch" ]; then
+        DISTRO="arch"
+    elif [ "${ID}" = "fedora" ]; then
+        DISTRO="fedora"
+    fi
+else
+    if grep -q "Scientific*6\." /etc/redhat-release; then
+        DISTRO="sl6"
+    fi
+fi
+
+
+# alter path (based on pathmunge) 
+alter_path () {
+    case ":${PATH}:" in
+        *:"$2":*)
+            if [ "$1" = "remove" ]; then
+                PATH=${PATH/:$2/}  # not first
+                PATH=${PATH/$2:/}  # first
+            fi
+            ;;
+        *)
+            if [ "$1" = "add" ]; then
+                if [ "$3" = "after" ] ; then
+                    PATH=$PATH:$2
+                else
+                    PATH=$2:$PATH
+                fi
+            fi
+    esac
+}

@@ -19,7 +19,7 @@ case $TERM in
 esac
 
 # check for vcprompt
-if ${HOME}/.bash/vcprompt >/dev/null 2>/dev/null; then VCPROMPT='yes'; fi
+if ${HOME}/.local/bin/vcprompt >/dev/null 2>/dev/null; then VCPROMPT='yes'; fi
 
 # turn off normal virtenv prompt 
 export VIRTUAL_ENV_DISABLE_PROMPT="yes"
@@ -31,7 +31,7 @@ function __prompt_command {
     local vcin
     local vc
 
-    path="${PWD/#$HOME/~}"
+    path=${PWD/#$HOME/\~}
     until [ ${#path} -lt 50 ]; do
 	path="../${path#*/*/}"
     done
@@ -45,7 +45,7 @@ function __prompt_command {
     fi
 
     if [ -n "${VCPROMPT}" ]; then
-	vc=$(${HOME}/.bash/vcprompt -f "%n:%b:%r:%m%u")
+	vc=$(${HOME}/.local/bin/vcprompt -f "%n:%b:%r:%m%u")
 	if [ -n "$vc" ]; then
 	    OIFS=$IFS; IFS=":"; set $vc; IFS=$OIFS
 

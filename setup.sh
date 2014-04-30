@@ -1,6 +1,9 @@
 #!/bin/bash
 #set -x
 
+
+# internal functions
+
 check_executable() {
     [[ $(command -v $1) ]] && return
     echo "command $1 needs to be in PATH"
@@ -27,6 +30,19 @@ expand_file() {
     eval "echo \"$(cat $1)\""
 }
 
+# source external functions
+source bash/functions
+
+
+#
+# make should some directories exist/adjust PATH
+#
+[ ! -d ${HOME}/.config ] && mkdir ${HOME}/.config
+[ ! -d ${HOME}/.local/bin ] && mkdir -p ${HOME}/.local/bin
+
+alter_path remove ${HOME}/.local/bin
+alter_path add ${HOME}/.local/bin
+
 
 #
 # Check needed executables and configuration
@@ -41,33 +57,33 @@ fi
 
 
 #
-# Install files
+# Install configuration files
 #
-
-# create ~/Apps/
-[ ! -d ${HOME}/Apps ] && mkdir ${HOME}/Apps
-[ ! -d ${HOME}/Apps/bin ] && mkdir ${HOME}/Apps/bin
-[ ! -f ${HOME}/Apps/apps-config ] && touch ${HOME}/Apps/apps-config
 
 # bash
 check_executable keychain
 check_executable tmux
 
-[ ! -d ${HOME}/.bash ] && mkdir ${HOME}/.bash
+[ ! -d ${HOME}/.config/bash ] && mkdir ${HOME}/.config/bash
 
-copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
+copy_if_update bash/bashrc ${HOME}/.bashrc
 copy_if_update bash/i18n ${HOME}/.i18n
-copy_if_update bash/prompt ${HOME}/.bash/prompt
+
+copy_if_update bash/functions ${HOME}/.config/bash/functions
+copy_if_update bash/prompt ${HOME}/.config/bash/prompt
+
 
 # tmux
 [ ! -d ${HOME}/.tmux ] &&  mkdir ${HOME}/.tmux
 copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
 
+
 # git
 expand_file git/gitconfig >/tmp/gitconfig
 copy_if_update /tmp/gitconfig ${HOME}/.gitconfig
 rm /tmp/gitconfig
+
 
 # SSH
 [ ! -d ${HOME}/.ssh ] && (mkdir ${HOME}/.ssh; chmod 700)
@@ -80,7 +96,7 @@ chmod 600 ${HOME}/.ssh/config
 #
 
 # download/install tmux-mem-cpu-load in ~/.tmux
-if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
+if [ ! -x ${HOME}/.local/bin/tmux-mem-cpu-load ]; then
     check_executable cmake
     check_executable g++
     check_executable git
@@ -92,7 +108,7 @@ if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
 	cd tmux-mem-cpu-load
 	cmake .
 	make
-	cp tmux-mem-cpu-load ${HOME}/.tmux/  
+	cp tmux-mem-cpu-load ${HOME}/.local/bin/
 	cd ..
 	rm -rf tmux-mem-cpu-load
     else
@@ -103,7 +119,7 @@ if [ ! -x ${HOME}/.tmux/tmux-mem-cpu-load ]; then
 fi
 
 # download/install vcprompt in ~/.bash
-if [ ! -x ${HOME}/.bash/vcprompt ]; then
+if [ ! -x ${HOME}/.local/bin/vcprompt ]; then
     check_executable wget
     check_executable gcc
     check_executable make
@@ -114,7 +130,7 @@ if [ ! -x ${HOME}/.bash/vcprompt ]; then
 	tar -xzf vcprompt-1.1.tar.gz
 	cd vcprompt-1.1
 	make
-	cp vcprompt ${HOME}/.bash/
+	cp vcprompt ${HOME}/.local/bin/
 	cd ..
 	rm -rf vcprompt-1.1*
     else
@@ -130,14 +146,14 @@ fi
 #
 
 # clean all from apps-config after '# SETUP:'
-awk '{print} /# SETUP:/{exit}' ${HOME}/Apps/apps-config >> /tmp/apps-config
+#awk '{print} /# SETUP:/{exit}' ${HOME}/Apps/apps-config >> /tmp/apps-config
 
 # install setups
-setups=$(grep "^# SETUP:" ${HOME}/Apps/apps-config | sed -e 's/^# SETUP://')
-for setup in $setups; do
-    ./apps-setups/${setup}.sh
-done
+#setups=$(grep "^# SETUP:" ${HOME}/Apps/apps-config | sed -e 's/^# SETUP://')
+#for setup in $setups; do
+#    ./apps-setups/${setup}.sh
+#done
 
 # copy on change
-copy_if_update /tmp/apps-config ${HOME}/Apps/apps-config
-rm /tmp/apps-config
+#copy_if_update /tmp/apps-config ${HOME}/Apps/apps-config
+#rm /tmp/apps-config
