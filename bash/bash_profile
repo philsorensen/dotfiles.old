@@ -16,7 +16,7 @@ unset -f alter_path
 [[ $- != *i* ]] && return
 
 
-if [ "${DISTRO}" != "unsupported"]; then
+if [ "${DISTRO}" != "unsupported" ]; then
     # Load keychain (inherit if existing SSH_AUTH_SOCK)
     if [ "$SSH_AUTH_SOCK" ]; then
         inherit="--inherit any"

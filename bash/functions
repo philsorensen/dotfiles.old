@@ -14,7 +14,7 @@ if [ -f "/etc/os-release" ]; then
         DISTRO="fedora"
     fi
 else
-    if grep -q "Scientific*6\." /etc/redhat-release; then
+    if grep -q "Scientific.*6\." /etc/redhat-release; then
         DISTRO="sl6"
     fi
 fi
