@@ -61,7 +61,7 @@ fi
 #
 
 # bash
-check_executable keychain
+source installer/keychain.sh
 check_executable tmux
 
 [ ! -d ${HOME}/.config/bash ] && mkdir ${HOME}/.config/bash
@@ -95,50 +95,8 @@ chmod 600 ${HOME}/.ssh/config
 # Install some binaries
 #
 
-# download/install tmux-mem-cpu-load in ~/.tmux
-if [ ! -x ${HOME}/.local/bin/tmux-mem-cpu-load ]; then
-    check_executable cmake
-    check_executable g++
-    check_executable git
-    check_executable make
-
-    pushd /tmp
-    git clone git://github.com/thewtex/tmux-mem-cpu-load
-    if [ -d /tmp/tmux-mem-cpu-load ]; then
-	cd tmux-mem-cpu-load
-	cmake .
-	make
-	cp tmux-mem-cpu-load ${HOME}/.local/bin/
-	cd ..
-	rm -rf tmux-mem-cpu-load
-    else
-	echo "Failed to get tmux-mem-cpu-load"
-	exit
-    fi
-    popd
-fi
-
-# download/install vcprompt in ~/.bash
-if [ ! -x ${HOME}/.local/bin/vcprompt ]; then
-    check_executable wget
-    check_executable gcc
-    check_executable make
-
-    pushd /tmp
-    wget https://bitbucket.org/gward/vcprompt/downloads/vcprompt-1.1.tar.gz
-    if [ -f /tmp/vcprompt-1.1.tar.gz ]; then
-	tar -xzf vcprompt-1.1.tar.gz
-	cd vcprompt-1.1
-	make
-	cp vcprompt ${HOME}/.local/bin/
-	cd ..
-	rm -rf vcprompt-1.1*
-    else
-	echo "Failed to get vcprompt"
-	exit
-    fi
-    popd
-fi
+source installer/tmux-mem-cpu-load.sh
+source installer/vcprompt.sh
 
 
 #
