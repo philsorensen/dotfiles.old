@@ -45,25 +45,21 @@ alter_path add ${HOME}/.local/bin
 
 
 #
-# Check needed executables and configuration
+# Bash setup
 #
 
-# config variables
-if [ "${USER}" == "pas37" ]; then
-    EMAIL="pas37@cornell.edu"
-else
-    EMAIL="phil.a.sorensen@gmail.com"
-fi
-
-
-#
-# Install configuration files
-#
-
-# bash
+# keychain
 source installer/keychain.sh
-check_executable tmux
 
+# tmux
+check_executable tmux
+copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
+source installer/tmux-mem-cpu-load.sh
+
+# vcprompt
+source installer/vcprompt.sh
+
+# bash configs
 [ ! -d ${HOME}/.config/bash ] && mkdir ${HOME}/.config/bash
 
 copy_if_update bash/bash_profile ${HOME}/.bash_profile
@@ -74,44 +70,27 @@ copy_if_update bash/functions ${HOME}/.config/bash/functions
 copy_if_update bash/prompt ${HOME}/.config/bash/prompt
 
 
-# tmux
-[ ! -d ${HOME}/.tmux ] &&  mkdir ${HOME}/.tmux
-copy_if_update tmux/tmux.conf ${HOME}/.tmux.conf
+#
+# GIT
+#
 
+# set email
+if [ "${USER}" == "pas37" ]; then
+    EMAIL="pas37@cornell.edu"
+else
+    EMAIL="phil.a.sorensen@gmail.com"
+fi
 
-# git
+# build config file
 expand_file git/gitconfig >/tmp/gitconfig
 copy_if_update /tmp/gitconfig ${HOME}/.gitconfig
 rm /tmp/gitconfig
 
 
+#
 # SSH
+#
+
 [ ! -d ${HOME}/.ssh ] && (mkdir ${HOME}/.ssh; chmod 700)
 copy_if_update ssh/config ${HOME}/.ssh/config
 chmod 600 ${HOME}/.ssh/config
-
-
-#
-# Install some binaries
-#
-
-source installer/tmux-mem-cpu-load.sh
-source installer/vcprompt.sh
-
-
-#
-# Install setups into Apps 
-#
-
-# clean all from apps-config after '# SETUP:'
-#awk '{print} /# SETUP:/{exit}' ${HOME}/Apps/apps-config >> /tmp/apps-config
-
-# install setups
-#setups=$(grep "^# SETUP:" ${HOME}/Apps/apps-config | sed -e 's/^# SETUP://')
-#for setup in $setups; do
-#    ./apps-setups/${setup}.sh
-#done
-
-# copy on change
-#copy_if_update /tmp/apps-config ${HOME}/Apps/apps-config
-#rm /tmp/apps-config
