@@ -17,6 +17,7 @@ if [ ! -x ${HOME}/.local/bin/keychain ]; then
     cd ..
 
     rm -rf ${KEYCHAIN}
+    rm ${KEYCHAIN}.tar.bz2
     popd
     hash -r
 fi
