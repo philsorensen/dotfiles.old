@@ -112,12 +112,14 @@ chmod 600 ${HOME}/.ssh/config
 
 source installer/node.sh
 
-[ ! -L "${HOME}/.local/bin/node" ] && \
-    ln -s ${HOME}/Programs/node/bin/node ${HOME}/.local/bin/node
-[ ! -L "${HOME}/.local/bin/npm" ] && \
-    ln -s ${HOME}/Programs/node/lib/node_modules/npm/bin/npm-cli.js \
-          ${HOME}/.local/bin/npm
-hash -r
+if [ "${DISTRO}" != "arch" ]; then
+    [ ! -L "${HOME}/.local/bin/node" ] && \
+        ln -s ${HOME}/Programs/node/bin/node ${HOME}/.local/bin/node
+    [ ! -L "${HOME}/.local/bin/npm" ] && \
+        ln -s ${HOME}/Programs/node/lib/node_modules/npm/bin/npm-cli.js \
+        ${HOME}/.local/bin/npm
+    hash -r
+fi
 
 echo "prefix=\${HOME}/.local/"   > /tmp/npmrc
 echo "cache=/dev/shm/npm-cache" >> /tmp/npmrc
