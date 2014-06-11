@@ -105,3 +105,21 @@ rm /tmp/config
 
 chmod 600 ${HOME}/.ssh/config
 
+
+#
+# node.js
+#
+
+source installer/node.sh
+
+[ ! -L "${HOME}/.local/bin/node" ] && \
+    ln -s ${HOME}/Programs/node/bin/node ${HOME}/.local/bin/node
+[ ! -L "${HOME}/.local/bin/npm" ] && \
+    ln -s ${HOME}/Programs/node/lib/node_modules/npm/bin/npm-cli.js \
+          ${HOME}/.local/bin/npm
+hash -r
+
+echo "prefix=\${HOME}/.local/"   > /tmp/npmrc
+echo "cache=/dev/shm/npm-cache" >> /tmp/npmrc
+copy_if_update /tmp/npmrc ${HOME}/.npmrc
+rm /tmp/npmrc
