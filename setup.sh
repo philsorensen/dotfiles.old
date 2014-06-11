@@ -123,3 +123,12 @@ echo "prefix=\${HOME}/.local/"   > /tmp/npmrc
 echo "cache=/dev/shm/npm-cache" >> /tmp/npmrc
 copy_if_update /tmp/npmrc ${HOME}/.npmrc
 rm /tmp/npmrc
+
+
+#
+# python setup
+#
+
+# virtualenv-sh
+source installer/virtualenv-sh.sh
+

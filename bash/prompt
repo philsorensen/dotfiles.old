@@ -39,13 +39,15 @@ function __prompt_command {
     [ -n "$XTITLE" ] && \
 	echo -en "\n\033]0;${USER}@${HOSTNAME%%.*}:${path}\007"
 
-
+    pver=$(python -V 2>&1 | sed -e 's/Python \([0-9].[0-9]\).*/\1/')
     if [ -n "${VIRTUAL_ENV}" ]; then
-	venv=$(echo -ne " \033[31m$(basename ${VIRTUAL_ENV})\033[0m")
+	venv=$(echo -ne " \033[31m$(basename ${VIRTUAL_ENV})(${pver})\033[0m")
+    else
+	[ "${pver:0:1}" != "3" ] && venv=$(echo -ne " \033[31m${pver}\033[0m")
     fi
 
     if [ -n "${VCPROMPT}" ]; then
-	vc=$(${HOME}/.local/bin/vcprompt -f "%n:%b:%r:%m%u")
+	vc=$(${HOME}/.local/bin/vcprompt -t 250 -f "%n:%b:%r:%m%u")
 	if [ -n "$vc" ]; then
 	    OIFS=$IFS; IFS=":"; set $vc; IFS=$OIFS
 

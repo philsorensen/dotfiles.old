@@ -36,6 +36,9 @@ if [ "${DISTRO}" = "sl6" ]; then
     fi
 fi
 
+# Add virtualenv-sh support
+source ${HOME}/.config/bash/virtualenv-sh.bash
+
 
 # Source bashrc.local if availible
 [[ -f ${HOME}/.bashrc.local ]] && . ${HOME}/.bashrc.local
