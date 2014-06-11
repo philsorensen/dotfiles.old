@@ -29,8 +29,12 @@ if [ -n "${TMUX}" -a -z "${SSH_CONNECTION}" ]; then
     tmux set-option status-bg '#80ff80' >/dev/null
 fi
 
-
-# User specific aliases and functions
+# Enable some software collections on SL6 (if installed)
+if [ "${DISTRO}" = "sl6" ]; then
+    if scl -l | grep -q python33; then
+        enable_scl python33
+    fi
+fi
 
 
 # Source bashrc.local if availible

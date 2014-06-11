@@ -1,3 +1,4 @@
+# maintained by dotfiles - changes will be overwritten
 #
 # functions bash scripts
 #
@@ -38,4 +39,23 @@ alter_path () {
                 fi
             fi
     esac
+}
+
+# add Software Collection
+enable_scl () {
+    scl=$1
+
+    if [ -r "/etc/scl/prefixes/${scl}" ]; then
+        prefix=$(cat /etc/scl/prefixes/${scl})
+
+        if [ -r "${prefix}/${scl}/enable" ]; then
+            eval "SCLS=( ${X_SCLS[*]} )"
+
+            if ! /usr/bin/scl_enabled ${scl}; then
+                SCLS+=(${scl})
+                export X_SCLS=$(printf '%q ' "${SCLS[@]}")
+                . ${prefix}/${scl}/enable
+            fi
+        fi
+    fi
 }
