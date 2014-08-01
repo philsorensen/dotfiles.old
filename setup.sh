@@ -135,6 +135,17 @@ rm /tmp/npmrc
 # python setup
 #
 
+# install pip and virtualenv
+if [ -z "$(command -v pip)" ]; then
+    wget https://bootstrap.pypa.io/get-pip.py
+    python get-pip.py --user
+    rm get-pip.py
+    hash -r
+fi
+if [ -z "$(command -v virtualenv)" ]; then
+    pip install --user virtualenv
+    hash -r
+fi
+
 # virtualenv-sh
 source installer/virtualenv-sh.sh
-

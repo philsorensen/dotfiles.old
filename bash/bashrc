@@ -29,13 +29,6 @@ if [ -n "${TMUX}" -a -z "${SSH_CONNECTION}" ]; then
     tmux set-option status-bg '#80ff80' >/dev/null
 fi
 
-# Enable some software collections on SL6 (if installed)
-if [ "${DISTRO}" = "sl6" ]; then
-    if scl -l | grep -q python33; then
-        enable_scl python33
-    fi
-fi
-
 # Add virtualenv-sh support
 [ -n "${HAS_QUOTA}" ] && WORKON_HOME="/tmp/pas37-venv"
 [ "$(hostname -s)" = "lnx7233" ] && WORKON_HOME="/scratch/pas37/virtualenvs"

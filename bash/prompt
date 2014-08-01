@@ -43,7 +43,7 @@ function __prompt_command {
     if [ -n "${VIRTUAL_ENV}" ]; then
 	venv=$(echo -ne " \033[31m$(basename ${VIRTUAL_ENV})(${pver})\033[0m")
     else
-	[ "${pver:0:1}" != "3" ] && venv=$(echo -ne " \033[31m${pver}\033[0m")
+	venv=$(echo -ne " \033[31m${pver}\033[0m")
     fi
 
     if [ -n "${VCPROMPT}" ]; then
