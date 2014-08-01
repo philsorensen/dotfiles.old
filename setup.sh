@@ -121,8 +121,11 @@ if [ "${DISTRO}" != "arch" ]; then
     hash -r
 fi
 
-echo "prefix=\${HOME}/.local/"   > /tmp/npmrc
-echo "cache=/dev/shm/npm-cache" >> /tmp/npmrc
+echo "# maintained by dotfiles - changes will be overwritten"  > /tmp/npmrc
+echo "prefix=\${HOME}/.local/"                                >> /tmp/npmrc
+if [ -n "${HAS_QUOTA}" ]; then
+    echo "cache=/dev/shm/npm-cache"                           >> /tmp/npmrc
+fi
 copy_if_update /tmp/npmrc ${HOME}/.npmrc
 rm /tmp/npmrc
 

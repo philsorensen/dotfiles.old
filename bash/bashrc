@@ -37,6 +37,9 @@ if [ "${DISTRO}" = "sl6" ]; then
 fi
 
 # Add virtualenv-sh support
+[ -n "${HAS_QUOTA}" ] && WORKON_HOME="/tmp/pas37-venv"
+[ "$(hostname -s)" = "lnx7233" ] && WORKON_HOME="/scratch/pas37/virtualenvs"
+
 source ${HOME}/.config/bash/virtualenv-sh.bash
 
 

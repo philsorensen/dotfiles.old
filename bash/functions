@@ -20,6 +20,11 @@ else
     fi
 fi
 
+# set $HAS_QUOTA
+if [ -n "$(command -v quota)" ] && [ -n "$(quota)" ]; then
+    HAS_QUOTA="YES"
+fi
+
 
 # alter path (based on pathmunge) 
 alter_path () {
