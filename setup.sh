@@ -97,7 +97,8 @@ PERSIST="    ControlPersist 300
 [ "${DISTRO}" == "sl6" ] && PERSIST=""
 
 # install config
-[ ! -d ${HOME}/.ssh ] && (mkdir ${HOME}/.ssh; chmod 700)
+[ ! -d ${HOME}/.ssh ] && mkdir ${HOME}/.ssh
+chmod 700 ${HOME}/.ssh
 
 expand_file ssh/config >/tmp/config
 copy_if_update /tmp/config ${HOME}/.ssh/config
