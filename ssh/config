@@ -3,6 +3,9 @@
 Host github.com
     ForwardX11 no
 
+Host bitbucket.org
+    ForwardX11 no
+
 Host *.cornell.edu
     User pas37
 
