@@ -85,7 +85,7 @@ fi
 expand_file git/gitconfig >/tmp/gitconfig
 copy_if_update /tmp/gitconfig ${HOME}/.gitconfig
 rm /tmp/gitconfig
-
+copy_if_update git/gitconfig ${HOME}/.gitignore
 
 #
 # SSH

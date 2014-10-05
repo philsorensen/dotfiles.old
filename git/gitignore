@@ -1,0 +1,5 @@
+# maintained by dotfiles - changes will be overwritten
+
+# ignore backup files
+*~
+
