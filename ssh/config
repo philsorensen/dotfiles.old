@@ -1,5 +1,3 @@
-# maintained by dotfiles - changes will be overwritten
-
 Host github.com
     ForwardX11 no
 
@@ -12,7 +10,8 @@ Host *.cornell.edu
 Host *
     ControlMaster auto
     ControlPath ~/.ssh/master-%l-%r@%h:%p
-${PERSIST}
+    ControlPersist 300
+
     ServerAliveInterval 30
     ServerAliveCountMax 3
 

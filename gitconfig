@@ -1,11 +1,11 @@
-# maintained by dotfiles - changes will be overwritten
 [user]
 	name = Phillip Sorensen
-	email = ${EMAIL}
 [core]
 	autocrlf = input
 	excludesfile = ~/.gitignore
 [color]
 	ui = true
 [push]
-	default = simple 
+	default = simple
+[include]
+	path = ~/.git.email

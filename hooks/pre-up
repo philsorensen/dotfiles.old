@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# make sure ~/.local/bin exits
+[ ! -d "${HOME}/.local/bin" ] && mkdir ${HOME}/.local/bin
+
