@@ -1,5 +1,29 @@
 #!/bin/sh
 
-# make sure ~/.local/bin exits
+# pull latest from git repo
+git pull
+
+# Create directories
 [ ! -d "${HOME}/.local/bin" ] && mkdir ${HOME}/.local/bin
+
+
+#
+# Check for needed software
+#
+missing=""
+
+# nodejs v10.x / npm
+if [[ $(node -v) != v10.* ]]; then
+       missing=" node-v10.x"
+fi
+if ! command -v npm >/dev/null; then
+       missing=" npm"
+fi
+
+# kill update if any programs are missing
+
+if [ -n "${missing}" ]; then
+	echo "Missing software:${missing}"
+	killall rcup
+fi
 

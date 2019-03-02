@@ -1,5 +1,6 @@
 [user]
 	name = Phillip Sorensen
+	email = phil.a.sorensen@gmail.com
 [core]
 	autocrlf = input
 	excludesfile = ~/.gitignore
@@ -8,4 +9,4 @@
 [push]
 	default = simple
 [include]
-	path = ~/.git.email
+	path = ~/.gitconfig.local

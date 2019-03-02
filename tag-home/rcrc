@@ -1,2 +1,0 @@
-COPY_ALWAYS="ssh/config"
-TAGS="home"
