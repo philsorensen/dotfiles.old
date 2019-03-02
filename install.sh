@@ -7,7 +7,7 @@
 # copy rcrc.in to rcrc and add TAGS line to end
 cp rcrc.in rcrc
 if [ $# -gt 0 ]; then
-	echo "TAGS=\"$*\"" >> rcrc.in
+	echo "TAGS=\"$*\"" >> rcrc
 fi
 
 # run rcup -v
