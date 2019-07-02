@@ -12,6 +12,14 @@ git pull
 #
 missing=""
 
+# python3 and pip3
+if ! command -v python3 >/dev/null; then
+       missing=" python3"
+fi
+if ! command -v pip3 >/dev/null; then
+       missing=" pip3"
+fi
+
 # nodejs v10.x / npm
 if [[ $(node -v) != v10.* ]]; then
        missing=" node-v10.x"
