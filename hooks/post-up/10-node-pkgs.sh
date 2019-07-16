@@ -3,10 +3,13 @@
 # Install python packages and upgrade existing
 #
 
-needed_pkgs="pipenv"
-install_pkgs=""
+# needed:
+#  emacs: tern
+needed_pkgs="tern"
 
-current_pkgs=$(pip3 list --user | awk 'NR>2 {print $1}' | tr '\n' ' ')
+install_pkgs=""
+current_pkgs=$(npm -g ls --depth=0 --parseable | awk -F/ 'NR>1 {print $NF}' \
+	| tr '\n' ' ')
 
 for pkg in $needed_pkgs; do
     if [[ "$current_pkgs" != *$pkg* ]]; then
@@ -15,9 +18,9 @@ for pkg in $needed_pkgs; do
 done
 
 # update existing
-pip3 install -U --user $current_pkgs
+npm -g update
 
 # install missing
 if [ -n "$install_pkgs" ]; then
-    pip3 install --user $install_pkgs
+    npm -g install $install_pkgs
 fi

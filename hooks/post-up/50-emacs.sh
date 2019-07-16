@@ -1,12 +1,5 @@
 #!/bin/bash
 
-
-# install node packages used by emacs
-NODE_PACKAGES="tern"
-
-npm install -g ${NODE_PACKAGES}
-
-
 # clone / update emacs config
 if [ ! -d "${HOME}/.emacs.d/.git" ]; then
 	cd ${HOME}
@@ -18,4 +11,3 @@ else
 	cd ${HOME}/.emacs.d
 	git pull
 fi
-
