@@ -3,10 +3,10 @@
 # Install python packages and upgrade existing
 #
 
-needed_pkgs="pipenv"
+needed_pkgs=""
 install_pkgs=""
 
-current_pkgs=$(pip3 list --user | awk 'NR>2 {print $1}' | tr '\n' ' ')
+current_pkgs=$(pip3 list --user --format=legacy|awk '{print $1}'|tr '\n' ' ')
 
 for pkg in $needed_pkgs; do
     if [[ "$current_pkgs" != *$pkg* ]]; then
