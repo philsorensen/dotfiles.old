@@ -21,8 +21,8 @@ if ! command -v pip3 >/dev/null; then
 fi
 
 # nodejs v10.x / npm
-if [[ $(node -v) != v10.* ]]; then
-       missing=" node-v10.x"
+if [[ $(node -v) != v12.* ]]; then
+       missing=" node-v12.x"
 fi
 if ! command -v npm >/dev/null; then
        missing=" npm"
