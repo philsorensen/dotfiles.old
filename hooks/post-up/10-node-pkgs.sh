@@ -5,7 +5,15 @@
 
 # needed:
 #  emacs: tern
-needed_pkgs="tern"
+PKGS="tern"
+
+
+# update existing
+
+npm -g update
+
+
+# install missing
 
 install_pkgs=""
 current_pkgs=$(npm -g ls --depth=0 --parseable | awk -F/ 'NR>1 {print $NF}' \
@@ -17,10 +25,6 @@ for pkg in $needed_pkgs; do
     fi
 done
 
-# update existing
-npm -g update
-
-# install missing
 if [ -n "$install_pkgs" ]; then
     npm -g install $install_pkgs
 fi

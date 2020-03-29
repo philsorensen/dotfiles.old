@@ -6,30 +6,28 @@ git pull
 # Create directories
 [ ! -d "${HOME}/.local/bin" ] && mkdir ${HOME}/.local/bin
 
-
 #
 # Check for needed software
 #
 missing=""
 
-# python3 and pip3
+# python3 and pip3 >= 20
 if ! command -v python3 >/dev/null; then
-       missing=" python3"
+    missing="${missing} python3"
 fi
-if ! command -v pip3 >/dev/null; then
-       missing=" pip3"
+if [[ $(pip3 -V | awk '{print $2}' | awk -F. '{print $1}') -lt 20 ]]; then
+    missing="${missing} pip3(>=20.x)"
 fi
 
 # nodejs v10.x / npm
 if [[ $(node -v) != v12.* ]]; then
-       missing=" node-v12.x"
+    missing="${missing} node(v12.x)"
 fi
 if ! command -v npm >/dev/null; then
-       missing=" npm"
+       missing="${missing} npm"
 fi
 
 # kill update if any programs are missing
-
 if [ -n "${missing}" ]; then
 	echo "Missing software:${missing}"
 	killall rcup
