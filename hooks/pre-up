@@ -11,17 +11,14 @@ git pull
 #
 missing=""
 
-# python3 and pip3 >= 20
+# python3
 if ! command -v python3 >/dev/null; then
     missing="${missing} python3"
 fi
-if [[ $(pip3 -V | awk '{print $2}' | awk -F. '{print $1}') -lt 20 ]]; then
-    missing="${missing} pip3(>=20.x)"
-fi
 
-# nodejs v10.x / npm
-if [[ $(node -v) != v12.* ]]; then
-    missing="${missing} node(v12.x)"
+# nodejs v14.x / npm
+if [[ $(node -v) != v14.* ]]; then
+    missing="${missing} node(v14.x)"
 fi
 if ! command -v npm >/dev/null; then
        missing="${missing} npm"
@@ -32,4 +29,3 @@ if [ -n "${missing}" ]; then
 	echo "Missing software:${missing}"
 	killall rcup
 fi
-
