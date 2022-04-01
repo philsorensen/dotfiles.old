@@ -3,28 +3,15 @@
 # Install python packages and upgrade existing
 #
 
-# needed:
-#  emacs: tern
-PKGS="tern"
-
+# desired packages
+PKGS="pyright typescript typescript-language-server"
 
 # update existing
-
 npm -g update
 
-
 # install missing
-
-install_pkgs=""
-current_pkgs=$(npm -g ls --depth=0 --parseable | awk -F/ 'NR>1 {print $NF}' \
-	| tr '\n' ' ')
-
-for pkg in $needed_pkgs; do
-    if [[ "$current_pkgs" != *$pkg* ]]; then
-        install_pkgs="$install_pkgs $pkg"
+for pkg in ${PKGS}; do
+    if ! npm -g ls --depth=0 --parseable | grep -q "/${pkg}$"; then
+        npm -g install ${pkg}
     fi
 done
-
-if [ -n "$install_pkgs" ]; then
-    npm -g install $install_pkgs
-fi
