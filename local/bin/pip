@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "Use 'pipx' to install user python packages"
+exit 1
