@@ -1,9 +1,16 @@
 #!/bin/sh
+#
+# 1. Make sure needed directories exist
+# 2. Check for needed software
+# 3. Check for needed fonts
+#
 
 # pull latest from git repo
 git pull
 
+#
 # Create directories
+#
 [ ! -d "${HOME}/.local/bin" ] && mkdir ${HOME}/.local/bin
 
 #
@@ -21,11 +28,27 @@ if [[ $(node -v) != v14.* ]]; then
     missing="${missing} node(v14.x)"
 fi
 if ! command -v npm >/dev/null; then
-       missing="${missing} npm"
+    missing="${missing} npm"
 fi
 
-# kill update if any programs are missing
+#
+# Check for needed fonts
+#
+fonts=""
+
+for font in "JetBrains Mono"; do
+    if ! fc-list | grep -q "${font}"; then
+         fonts="${fonts} ${font}"
+    fi
+done
+
+
+# kill update if any programs/fonts are missing
 if [ -n "${missing}" ]; then
 	echo "Missing software:${missing}"
+	killall rcup
+fi
+if [ -n "${fonts}" ]; then
+	echo "Missing fonts:${fonts}"
 	killall rcup
 fi
